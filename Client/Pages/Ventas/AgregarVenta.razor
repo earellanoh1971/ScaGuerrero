@@ -1,0 +1,550 @@
+﻿@page "/agregarVenta"
+@using ScaGuerrero.Shared
+@inject HttpClient http
+
+<div id="app" class="container-fluid p-md-2">    
+        <div class="row">
+            <div class="col-md-11">
+                <div class="card">                   
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text btn btn-primary"
+                                                              style="width:105px;">Cliente</span>
+                                                    </div>
+                                                    <input type="hidden" id="IdCliente" />
+                                                    <input id="Cliente" type="text" placeholder="Seleccione un Cliente..." @bind-value="cNombreCliente" @bind-value:event="oninput" class="form-control" />
+                                                    <div class="input-group-prepend">
+                                                        <a id="btnBuscarCliente" class="btn btn-primary text-white" data-bs-toggle="modal" data-bs-target="#buscarCliente">
+                                                            <i class="fas fa-search"></i>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <div class="modal fade" id="buscarCliente" tabindex="-1" aria-labelledby="buscarCliente" aria-hidden="true">
+                                                    <div class="modal-dialog modal-lg modal-dialog-centered">
+                                                        <div class="modal-content">
+
+                                                            <div class="modal-header bg-primary text-white">
+                                                                <h3>Buscar Cliente</h3>
+                                                                <button class="btn-close btn-danger" data-bs-dismiss="modal" aria-label="Close" />                                                                                                                                  
+                                                            </div>
+
+                                                            <div class="modal-body">                                                                
+                                                                @{
+                                                                    string[] encabezados = { "Nombre"};
+                                                                    string[] campos = { "Nombre" };
+                                                                    string[] estilos = { "text-left"};
+                                                                }
+                                                                <Busqueda titulo="Cliente"
+                                                                            encabezados=encabezados
+                                                                            campos=campos
+                                                                            clases=estilos
+                                                                            lista=listaClientes 
+                                                                            eventSeleccionar="SeleccionaCliente"
+                                                                            eventBusqueda="BusquedaCliente"
+                                                                            Seleccionar=true
+                                                                            />                                                                
+                                                            </div>                                                           
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-12 ">
+                                                <h6>@cRfcCliente</h6>
+                                                <h6>@cDomicilio1</h6>
+                                                <h6>@cDomicilio2</h6>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="row">
+                                    <div class="col">
+                                        <div id="datosCredito" class="card">
+                                            <div class="card-body">
+                                                <div class="input-group mb-2">
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text btn btn-primary"
+                                                                  style="width:105px;">Ciclo</span>
+                                                        </div>
+                                                        <input type="hidden" id="IdCliente" />
+                                                        <input id="Ciclo" type="text" placeholder="Seleccione un Ciclo..." @bind-value="cNombreCiclo" @bind-value:event="oninput" class="form-control" />
+                                                        <div class="input-group-prepend">
+                                                            <a id="btnBuscarCiclo" class="btn btn-primary text-white" data-bs-toggle="modal" data-bs-target="#buscarCiclo">
+                                                                <i class="fas fa-search"></i>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal fade" id="buscarCiclo" tabindex="-1" aria-labelledby="buscarCiclo" aria-hidden="true">                                                        
+                                                            <div class="modal-dialog modal-lg modal-dialog-centered">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header bg-primary text-white">
+                                                                        <h3>Buscar Ciclo</h3>
+                                                                        <button class="btn-close btn-danger" data-bs-dismiss="modal" aria-label="Close" />
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                        @{
+                                                                            string[] encabezadosCiclo = { "Nombre" };
+                                                                            string[] camposCiclo = { "Nombre" };
+                                                                            string[] estilosCiclo = { "text-left" };
+                                                                        }                                                                       
+                                                                        <Busqueda titulo="Ciclo"
+                                                                                  encabezados=encabezadosCiclo
+                                                                                  campos=camposCiclo
+                                                                                  clases=estilosCiclo
+                                                                                  lista=listaCiclos
+                                                                                  eventSeleccionar="SeleccionaCiclo"
+                                                                                  eventBusqueda="BusquedaCiclo"
+                                                                                  Seleccionar=true />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                    <div class="input-group mb-2">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text" style="width:175px;" id="basic-addon1">Fecha de Vencimiento</span>
+                                                        </div>
+                                                        <input type="date" class="form-control" pattern="[0-9]{2}/[0-9]{2}/[0-9]{4}" />
+                                                    </div>
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text" style="width:175px;" id="basic-addon1">Anticipo</span>
+                                                        </div>
+                                                        <input type="text" class="form-control text-right" value="0"
+                                                               style="content:'$';">
+                                                    </div>
+                                                </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="col-md-4">
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <div class="input-group mb-2">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text btn btn-primary"
+                                                              style="width:150px;" id="basic-addon1">Forma de Pago</span>
+                                                    </div>
+                                                    <select class="form-control text-primary selectpicker"
+                                                            data-style="btn-outline-primary">
+                                                        <option>EFECTIVO</option>
+                                                        <option>CREDITO</option>
+                                                        <option>TARJERTA DE CREDITO</option>
+                                                        <option>TARJETA DE DEBITO</option>
+                                                        <option>ESPECIE</option>
+                                                    </select>
+                                                </div>
+                                                <div class="input-group mb-2">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text btn btn-primary"
+                                                              style="width:150px;" id="basic-addon1">Método de Pago</span>
+                                                    </div>
+                                                    <select class="form-control text-primary selectpicker"
+                                                            data-style="btn-outline-primary">
+                                                        <option>PAGO EN UNA SOLA EXHIBICION</option>
+                                                        <option>PAGO EN PARCIALIDADES</option>
+                                                    </select>
+                                                </div>
+                                                <div class="input-group mb-2">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text btn btn-primary"
+                                                              style="width:150px;" id="basic-addon1">Uso del CFDI</span>
+                                                    </div>
+                                                    <select class="form-control text-primary selectpicker"
+                                                            data-style="btn-outline-primary">
+                                                        <option>GASTOS EN GENERAL</option>
+                                                        <option>ADQUISICION DE MERCANCIA</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card mt-3">
+                            <div class="card-header">
+                                <div class="row">
+                                    <div class="col-sm-12 col-md-10 mb-sm-1 mb-md-2">
+                                        <div class="row">
+                                            <input type="hidden" id="hPctIVA" />
+                                            <input type="hidden" id="hPctDesc" />
+                                            <div class="col-md-2">
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text">Cantidad</span>
+                                                    </div>
+                                                    <input id="Cantidad" type="text" class="form-control text-right" style="content:'$';" @bind-value="cCantidad" @bind-value:event="oninput" />
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text">Código</span>
+                                                    </div>
+                                                    <input id="Codigo" type="text" class="form-control" style="text-transform:uppercase;" @bind-value="cCodigo" @bind-value:event="oninput" @onkeyup="BusquedaCodigo"/>
+                                                    
+                                                </div>
+                                            </div>
+                                            <div class="col-md-5">
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text btn btn-primary"
+                                                              style="width:105px;">Descripcion</span>
+                                                    </div>
+                                                    <input type="hidden" id="IdArticulo" />
+                                                    <input id="Articulo" type="text" placeholder="Seleccione un Producto o Servicio..." @bind-value="cNombreArticulo" @bind-value:event="oninput" class="form-control" />
+                                                    <div class="input-group-prepend">
+                                                        <a id="btnBuscarArticulo" class="btn btn-primary text-white" data-bs-toggle="modal" data-bs-target="#buscarArticulo">
+                                                            <i class="fas fa-search"></i>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text" id="basic-addon1">$</span>
+                                                    </div>
+                                                    <input id="Precio" type="text" class="form-control text-right" @bind-value="cPrecio" @bind-value:event="oninput" />
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12 col-md-2 mb-sm-1 mb-md-2">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <a id="btnAgregarPartida" onclick="AgregaPartida()" class="btn btn-success btn-block text-white">
+                                                    <i class="fas fa-plus"></i>
+                                                </a>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <a id="btnEditaPartida" onclick="ModificarPartida()" class="btn btn-info btn-block text-white">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                            </div>
+                                            <div class="modal fade" id="buscarArticulo" tabindex="-1" aria-labelledby="buscarArticulo" aria-hidden="true">
+                                                <div class="modal-dialog modal-lg modal-dialog-centered">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header bg-primary text-white">
+                                                            <h3>Buscar Producto o Servicio</h3>
+                                                            <button class="btn-close btn-danger" data-bs-dismiss="modal" aria-label="Close"/>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            @{
+                                                                string[] encabezadosArticulo = { "Producto o Servicio", "Unidad", "Precio", "Existencia" };
+                                                                string[] camposArticulo = { "Descripcion", "Unidad", "CPrecioPublico", "CExistencia" };
+                                                                string[] estilosArticulo = { "text-left", "text-right", "text-right", "text-right" };
+                                                            }                                                            
+                                                            <Busqueda titulo="Producto o Servicio"
+                                                                      encabezados=encabezadosArticulo
+                                                                      campos=camposArticulo
+                                                                      clases=estilosArticulo
+                                                                      lista=listaArticulos
+                                                                      eventSeleccionar="SeleccionaArticulo"
+                                                                      eventBusqueda="BusquedaArticulo"
+                                                                      Seleccionar=true />
+                                                        </div>                                                        
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="modal fade" id="editaPartida" tabindex="-1">
+                                                <div class="modal-dialog modal-dialog-centered">
+                                                    <div class="modal-content">
+                                                        <div class="modal-body">
+                                                            <div class="container">
+                                                                <div class="row">
+                                                                    <div class="col-md-12">
+                                                                        <div class="input-group mb-3">
+                                                                            <div class="input-group-prepend">
+                                                                                <span style="width:105px;" class="input-group-text">IVA</span>
+                                                                            </div>
+                                                                            <input id="fPctIVA" type="text" class="form-control text-right" aria-label="Porcentaje de IVA">
+                                                                            <div class="input-group-append">
+                                                                                <span class="input-group-text">%</span>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-md-12">
+                                                                        <div class="input-group mb-3">
+                                                                            <div class="input-group-prepend">
+                                                                                <span style="width:105px;" class="input-group-text">Descuento</span>
+                                                                            </div>
+                                                                            <input id="fPctDesc" type="text" class="form-control text-right" aria-label="Pocentaje de Descuento">
+                                                                            <div class="input-group-append">
+                                                                                <span class="input-group-text">%</span>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button id="btnAceptarModificaPartida" type="button" class="btn btn-primary" data-dismiss="modal">Aceptar</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="modal fade" id="msgAlerta" tabindex="-1">
+                                                <div class="modal-dialog modal-dialog-centered">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title text-danger">Información!</h5>
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <div class="container">
+                                                                <div class="row">
+                                                                    <div class="col-md-12">
+                                                                        <p>Debe seleccionar primero un Producto o Servicio!</p>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <a class="btn btn-primary" data-dismiss="modal">Aceptar</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="modal fade" id="msgAlertaCliente" tabindex="-1">
+                                                <div class="modal-dialog modal-dialog-centered">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title text-danger">Información!</h5>
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <div class="container">
+                                                                <div class="row">
+                                                                    <div class="col-md-12">
+                                                                        <p>Debe seleccionar primero un Cliente!</p>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <a class="btn btn-primary" data-dismiss="modal">Aceptar</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-12 mt-0">
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-hover" id="tablaPartidas" width="100%" cellspacing="0">
+                                                <thead class="bg-primary text-white">
+                                                    <tr>
+                                                        <th>Acciones</th>
+                                                        <th>Cantidad</th>
+                                                        <th>Unidad</th>
+                                                        <th>Descripcion</th>
+                                                        <th>Precio</th>
+                                                        <th>Descuento</th>
+                                                        <th>IVA</th>
+                                                        <th>Importe</th>
+                                                    </tr>
+                                                </thead>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="row">
+                            <div class="col-md-9 mb-sm-2">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Observaciones</span>
+                                    </div>
+                                    <textarea asp-for="Venta.Observaciones" class="form-control" aria-label="Observaciones"></textarea>
+                                </div>
+                            </div>
+                            <div class="col-md-3 pr-md-4">
+                                <div class="input-group flex-nowrap">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text bg-primary text-white"
+                                              style="width:130px;"><strong>Descuento</strong></span>
+                                    </div>
+                                    <input asp-for="Venta.Descuento" type="hidden" id="nDescuento" />
+                                    <input id="DescTotal" type="text" class="form-control text-right" style="content:'$';" readonly />
+                                </div>
+                                <div class="input-group flex-nowrap">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text bg-primary text-white" style="width:130px;"><strong>SUB-TOTAL</strong></span>
+                                    </div>
+                                    <input asp-for="Venta.SubTotal" type="hidden" id="nSubTotal" />
+                                    <input id="SubTotal" type="text" class="form-control text-right" style="content:'$';" readonly />
+                                </div>
+                                <div class="input-group flex-nowrap">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text bg-primary text-white" style="width:130px;"><strong>IVA</strong></span>
+                                    </div>
+                                    <input asp-for="Venta.IVA" type="hidden" id="nIVA" />
+                                    <input id="IvaTotal" type="text" class="form-control text-right" style="content:'$';" readonly />
+                                </div>
+                                <div class="input-group flex-nowrap">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text bg-primary text-white" style="width:130px;"><strong>TOTAL</strong></span>
+                                    </div>
+                                    <input asp-for="Venta.Total" type="hidden" id="nTotal" />
+                                    <input id="TOTAL" type="text" class="form-control text-right" style="content:'$';" readonly />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-1 col-sm-">
+                <div class="card border-0">
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col text-center ml-sm-0 mt-md-4 mb-md-5 ">
+                                <a class="btn btn-secondary text-white">
+                                    <h1><i class="fas fa-tools"></i></h1>
+                                </a>
+                            </div>
+                            <div class="col text-center ml-sm-0 mt-md-5 mb-md-5">
+                                <a class="btn btn-warning text-white" disabled>
+                                    <h1><i class="fas fa-envelope"></i></h1>
+                                </a>
+                            </div>
+                            <div class="col text-center ml-sm-0 mt-md-5 mb-md-5">
+                                <a class="btn btn-warning text-white" disabled>
+                                    <h1><i class="fas fa-envelope"></i></h1>
+                                </a>
+                            </div>
+                            <div class="col text-center ml-sm-0 mt-md-5 mb-md-5">
+                                <a class="btn btn-warning text-white" disabled>
+                                    <h1><i class="fas fa-envelope"></i></h1>
+                                </a>
+                            </div>
+                            <div class="col text-center ml-sm-0 mt-md-5 mb-md-4">
+
+                                <button type="submit" id="btnImprimir" class="btn btn-success btn-block text-white">
+                                    <h1><i class="fas fa-print"></i></h1>
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+</div>
+
+
+
+@code {   
+    private string cDomicilio1 { get; set; } = "";
+    private string cDomicilio2 { get; set; } = "";
+    private string cRfcCliente { get; set; } = "";
+    private string cNombreCliente { get; set; } = "";
+    private string cNombreCiclo { get; set; } = "";
+    private string cNombreArticulo { get; set; } = "";
+    private string cCodigo { get; set; } = "";
+    private string cCantidad { get; set; } = "1";
+    private string cPrecio { get; set; } = "0.00";
+
+    private ClientesVM[] listaClientes;
+    private ClientesVM cliente { get; set; }
+    private CiclosVM[] listaCiclos;
+    private CiclosVM ciclo { get; set; }
+    private ArticulosVM[] listaArticulos;
+    private ArticulosVM articulo { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        listaClientes = await http.GetFromJsonAsync<ClientesVM[]>("api/Ventas/ListarClientes");
+        listaCiclos = await http.GetFromJsonAsync<CiclosVM[]>("api/Ventas/ListarCiclos");
+        listaArticulos = await http.GetFromJsonAsync<ArticulosVM[]>("api/Ventas/ListarArticulos");
+    }
+
+    public async Task BusquedaCliente(string data)
+    {
+        listaClientes = await http.GetFromJsonAsync<ClientesVM[]>("api/Clientes/Filtrar/" + data);
+    }
+    public async Task SeleccionaCliente(string data)
+    {
+        cliente = await http.GetFromJsonAsync<ClientesVM>("api/Clientes/Buscar/" + data);
+        cNombreCliente = cliente.Nombre;
+        cRfcCliente = cliente.Rfc;
+        if (cliente.Calle != "") cDomicilio1 = cliente.Calle.Trim();
+        if (cliente.Numero != "") cDomicilio1 += "# " + cliente.Numero.Trim();
+        if (cDomicilio1.Trim() != "") cDomicilio1 += ",";
+        if (cliente.Colonia.Trim() != "") cDomicilio1 += "Col. " + cliente.Colonia.Trim();
+
+        if (cliente.Localidad.Trim() != "") cDomicilio2 = cliente.Localidad.Trim();
+        if (cDomicilio2.Trim() != "") cDomicilio2 = ",";
+        if (cliente.Ciudad.Trim() != "") cDomicilio2 += cliente.Ciudad.Trim();
+        if (cDomicilio2.Trim() != "") cDomicilio2 += ",";
+        if (cliente.Estado.Trim() != "") cDomicilio2 += cliente.Estado.Trim();
+    }
+    public async Task SeleccionaCiclo(string data)
+    {
+        ciclo = await http.GetFromJsonAsync<CiclosVM>("api/Ciclos/Buscar/" + data);
+        cNombreCiclo = ciclo.Nombre;
+    }
+    public async Task BusquedaCiclo(string data)
+    {
+        listaCiclos = await http.GetFromJsonAsync<CiclosVM[]>("api/Ciclos/Filtrar/" + data);
+    }
+
+    public async Task SeleccionaArticulo(string data)
+    {
+        articulo = await http.GetFromJsonAsync<ArticulosVM>("api/Articulos/Buscar/" + data);
+        cNombreArticulo = articulo.Descripcion;
+        cCodigo = articulo.Codigo;
+        cPrecio = articulo.CPrecioPublico;
+    }
+
+    public async Task BusquedaArticulo(string data)
+    {
+        listaArticulos = await http.GetFromJsonAsync<ArticulosVM[]>("api/Articulos/Filtrar/" + data);
+    }
+
+    public async Task BusquedaCodigo(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter") {
+            articulo = await http.GetFromJsonAsync<ArticulosVM>("api/Articulos/BuscarCodigo/" + cCodigo);
+            if (articulo != null)
+            {
+                cNombreArticulo = articulo.Descripcion;
+                cPrecio = articulo.CPrecioPublico;
+            }
+        }
+    }
+}

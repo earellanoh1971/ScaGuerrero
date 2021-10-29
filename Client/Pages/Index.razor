@@ -1,0 +1,76 @@
+﻿@page "/"
+@using ScaGuerrero.Shared
+@inject HttpClient http
+
+@if (listaDiapositivas == null)
+{
+    <button class="btn btn-primary" type="button" disabled>
+        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        Cargando Informacion...
+    </button>
+}
+else
+{
+    <div class="cointainer mt-2">
+        <div class="row">
+            <div class="col-md-3 text-center">
+                <img src="Imagenes/Logo.png" class="rounded d-block img-fluid">
+                <hr />
+                <h5>Estamos ubicados en:</h5>
+                <h6>Autopista México-Querétaro </h6>
+                <h6>Km. 176.5</h6>
+                <h6>San Juan del Río, Querétaro</h6>
+                <h6><span><i class="fas fa-phone"></i> Teléfono 427-271 0700</span></h6>
+            </div>
+            <div class="col-md-9">
+                <div id="carouselDiapositivas" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        @{ int n = listaDiapositivas.Count();
+                            if (n > 0)
+                            {
+                                int k = 0;
+                                foreach (var item in listaDiapositivas)
+                                {
+                                    var itemDinamico = "";
+                                    if (k == 0) { itemDinamico = "active"; }
+                                    k++;
+                                    Uri = "/api/Imagenes/Mostrar/" + item.IdImagen.ToString();
+                                    <div class="carousel-item @itemDinamico ml-1">
+                                        <img src=@Uri class="rounded d-block w-100 img-fluid" style="height:616px">
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <div class="carousel-item active ml-1">
+                                    <img src="/Imagenes/Slider1.jpg" class="rounded d-block w-100 img-fluid">
+                                </div>
+                            }
+                        }
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselDiapositivas" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carouselDiapositivas" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <hr />
+        </div>
+    </div>
+}
+    @code{
+
+        private List<DiapositivasVM> listaDiapositivas;
+        private string Uri { get; set; }
+        protected override async Task OnInitializedAsync()
+        {
+            listaDiapositivas = await http.GetFromJsonAsync<List<DiapositivasVM>>("api/Diapositivas/Get");
+        }
+    }

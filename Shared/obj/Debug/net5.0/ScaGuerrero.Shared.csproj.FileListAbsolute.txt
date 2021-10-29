@@ -1,0 +1,12 @@
+C:\Users\Enrique Arellano\source\repos\ScaGuerrero\Shared\bin\Debug\net5.0\ScaGuerrero.Shared.deps.json
+C:\Users\Enrique Arellano\source\repos\ScaGuerrero\Shared\bin\Debug\net5.0\ScaGuerrero.Shared.dll
+C:\Users\Enrique Arellano\source\repos\ScaGuerrero\Shared\bin\Debug\net5.0\ref\ScaGuerrero.Shared.dll
+C:\Users\Enrique Arellano\source\repos\ScaGuerrero\Shared\bin\Debug\net5.0\ScaGuerrero.Shared.pdb
+C:\Users\Enrique Arellano\source\repos\ScaGuerrero\Shared\obj\Debug\net5.0\ScaGuerrero.Shared.csproj.AssemblyReference.cache
+C:\Users\Enrique Arellano\source\repos\ScaGuerrero\Shared\obj\Debug\net5.0\ScaGuerrero.Shared.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Enrique Arellano\source\repos\ScaGuerrero\Shared\obj\Debug\net5.0\ScaGuerrero.Shared.AssemblyInfoInputs.cache
+C:\Users\Enrique Arellano\source\repos\ScaGuerrero\Shared\obj\Debug\net5.0\ScaGuerrero.Shared.AssemblyInfo.cs
+C:\Users\Enrique Arellano\source\repos\ScaGuerrero\Shared\obj\Debug\net5.0\ScaGuerrero.Shared.csproj.CoreCompileInputs.cache
+C:\Users\Enrique Arellano\source\repos\ScaGuerrero\Shared\obj\Debug\net5.0\ScaGuerrero.Shared.dll
+C:\Users\Enrique Arellano\source\repos\ScaGuerrero\Shared\obj\Debug\net5.0\ref\ScaGuerrero.Shared.dll
+C:\Users\Enrique Arellano\source\repos\ScaGuerrero\Shared\obj\Debug\net5.0\ScaGuerrero.Shared.pdb

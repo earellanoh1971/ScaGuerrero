@@ -1,0 +1,21 @@
+﻿@page "/editarClientes/{Id}"
+@using ScaGuerrero.Shared
+@inject HttpClient http
+
+    <FormularioClientes Titulo=" Editar Cliente" oClientesVM=clienteVM imageDataUri=@Uri/>
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+    public string Uri{ get; set; }
+
+    public ClientesVM clienteVM = new();
+
+
+    protected async override Task OnParametersSetAsync()
+    {
+        clienteVM =  await http.GetJsonAsync<ClientesVM>("api/Clientes/obtenerCliente/" + Id);
+        Uri = "/api/Imagenes/Mostrar/" + clienteVM.IdImagen;       
+    }
+
+}

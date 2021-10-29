@@ -1,0 +1,58 @@
+﻿@page "/login2"             
+@using ScaGuerrero.Shared
+@inject HttpClient http
+@if (listaUsuarios == null)
+{
+    <button class="btn btn-primary" type="button" disabled>
+        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        Cargando Informacion...
+    </button>
+}
+else
+{
+    <h1 class="text-center">Iniciar Sesión</h1>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+                <div class="card">
+                    <div class="card-header bg-primary text-white text-center">
+                        <h5 class="card-title">Utilice una cuenta local para iniciar sesión.</h5>
+                    </div>
+                    <div class="row border m-2">
+                        <div class="col-md-12 p-2">
+                            <div class="input-group mt-2">
+                                <label class="input-group-text bg-primary text-white" for="selectUsuarios">Usuarios</label>
+                                <select class="form-select" id="selectUsuarios">
+                                    <option selected>Seleccione un Usuario...</option>
+                                    @foreach (var usuario in listaUsuarios)
+                                    {
+                                        <option value="@usuario.Id">@usuario.Usuario</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="form-group mt-2">
+                                <label for="password">Contraseña</label>
+                                <input id="password" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="form-group mt-2">
+                            <button class="btn btn-primary btn-block">Iniciar sesión</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+@code {
+    public List<UsuariosVM> listaUsuarios;
+    
+    protected override async Task OnInitializedAsync()
+    {
+
+        listaUsuarios = await http.GetJsonAsync<List<UsuariosVM>>("api/Usuarios/Get");       
+    }
+}

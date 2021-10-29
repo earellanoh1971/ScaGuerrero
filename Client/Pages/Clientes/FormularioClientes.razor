@@ -1,0 +1,242 @@
+﻿@using ScaGuerrero.Shared
+@using System.IO
+@using System.Drawing;
+@using System.Drawing.Imaging;
+@inject HttpClient http
+@inject NavigationManager navigationManager
+
+<EditForm Model="@oClientesVM" OnValidSubmit="GuardarDatos">
+    <DataAnnotationsValidator/>
+    <div class="container-fluid img-fluid p-2">
+        <div class="row ">
+            <div class="col-3">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Mensajes</h3>
+                    </div>
+                    <div class="card-body">
+                        <ValidationSummary />
+                    </div>
+                </div>
+            </div>
+            <div class="col-7">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="card-title">@Titulo</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="control-label">RFC</label>
+                                    <InputText @bind-Value="oClientesVM.Rfc" class="form-control"/>
+                                    <ValidationMessage For="@(() => oClientesVM.Rfc)" />
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="control-label">CURP</label>
+                                    <InputText @bind-Value="oClientesVM.Curp" class="form-control" />
+                                    <ValidationMessage For="@(() => oClientesVM.Curp)" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label class="control-label">Nombre</label>
+                                    <InputText @bind-Value="oClientesVM.Nombre" class="form-control" />
+                                    <ValidationMessage For="@(() => oClientesVM.Nombre)" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <ul class="nav nav-tabs card-header-tabs" id="nav-tab" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" id="nav-Domicilio-tab" data-bs-toggle="tab"
+                                   href="#nav-Domicilio" role="tab" aria-controls="nav-Domicilio"
+                                   aria-selected="true">Domicilio</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="nav-Contacto-tab" data-bs-toggle="tab"
+                                   href="#nav-Contacto" role="tab" aria-controls="nav-Contacto"
+                                   aria-selected="false">Contacto</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="nav-Informacion-tab" data-bs-toggle="tab" href="#nav-Informacion"
+                                   role="tab" aria-controls="nav-Informacion" aria-selected="false">Información</a>
+                            </li>
+
+                        </ul>
+                    </div>
+                    <div class="card-body">
+                        <div class="tab-content" id="nav-tabContent">
+                            <div class="tab-pane fade show active border  p-4" id="nav-Domicilio" role="tabpanel" aria-labelledby="nav-Domicilio-tab">
+                                <div class="row">
+                                    <div class="col-sm-7">
+                                        <div class="row">
+                                            <div class="col-md-8">
+                                                <div class="form-group">
+                                                    <label class="control-label">Calle</label>
+                                                    <InputText @bind-Value="oClientesVM.Calle" class="form-control" />
+                                                    <ValidationMessage For="@(() => oClientesVM.Calle)" />
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="control-label">Numero</label>
+                                                    <InputText @bind-Value="oClientesVM.Numero" class="form-control" />
+                                                    <ValidationMessage For="@(() => oClientesVM.Numero)" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <label class="control-label">Colonia</label>
+                                                    <InputText @bind-Value="oClientesVM.Colonia" class="form-control" />
+                                                    <ValidationMessage For="@(() => oClientesVM.Colonia)" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="control-label">Localidad</label>
+                                                    <InputText @bind-Value="oClientesVM.Localidad" class="form-control" />
+                                                    <ValidationMessage For="@(() => oClientesVM.Localidad)" />
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="control-label">Ciudad</label>
+                                                    <InputText @bind-Value="oClientesVM.Ciudad" class="form-control" />
+                                                    <ValidationMessage For="@(() => oClientesVM.Ciudad)" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-8">
+                                                <div class="form-group">
+                                                    <label class="control-label">Estado</label>
+                                                    <InputText @bind-Value="oClientesVM.Estado" class="form-control" />
+                                                    <ValidationMessage For="@(() => oClientesVM.Estado)" />
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="control-label">Código Postal</label>
+                                                    <InputText @bind-Value="oClientesVM.Cp" class="form-control" />
+                                                    <ValidationMessage For="@(() => oClientesVM.Cp)" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-5">
+                                        <div class="card">                                            
+                                            <img style="height:380px;" id="imgSeleccionada" src="@imageDataUri" class="card-img-top rounded-top p-2">
+                                            <label for="subidaArchivo" class="btn btn-primary mx-2"> Seleccione un Archivo...</label>
+                                            <InputFile id="subidaArchivo" OnChange="VerImagen" hidden />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade border p-4" id="nav-Contacto" role="tabpanel"
+                                 aria-labelledby="nav-Contacto-tab">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label class="control-label">Correo Electrónico</label>
+                                            <InputText @bind-Value="oClientesVM.EMail" class="form-control" />
+                                            <ValidationMessage For="@(() => oClientesVM.EMail)" />
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label">Teléfono Móvil</label>
+                                            <InputText @bind-Value="oClientesVM.Telefono" class="form-control" />
+                                            <ValidationMessage For="@(() => oClientesVM.Telefono)" />
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label">Teléfono Oficina</label>
+                                            <InputText @bind-Value="oClientesVM.Telefono2" class="form-control" />
+                                            <ValidationMessage For="@(() => oClientesVM.Telefono2)" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade border p-4" id="nav-Informacion" role="tabpanel"
+                                 aria-labelledby="nav-Informacion-tab">
+                                <div>
+                                    <div class="form-group">
+                                        <label class="control-label">Atención Cobranza</label>
+                                        <InputText @bind-Value="oClientesVM.AtnCobranza" class="form-control" />
+                                        <ValidationMessage For="@(() => oClientesVM.AtnCobranza)" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label lass="control-label">Atención a Ventas</label>
+                                        <InputText @bind-Value="oClientesVM.AtnVentas" class="form-control" />
+                                        <ValidationMessage For="@(() => oClientesVM.AtnVentas)" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label">Saldo Pendiente</label>
+                                        <InputNumber @bind-Value="oClientesVM.Saldo" class="form-control" />
+                                        <ValidationMessage For="@(() => oClientesVM.Saldo)" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="row">
+                            <div class=" col-sm-2">
+                                <input type="submit" class="form-control btn btn-success" value="Aceptar" />
+                            </div>
+                            <div class="col-sm-2">
+                                <NavLink href="/ListadoClientes">
+                                    <input class="form-control btn btn-warning" value="Regresar" />
+                                </NavLink>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</EditForm>
+@code {
+    [Parameter]
+    public string Titulo { get; set; }
+    [Parameter]
+    public ClientesVM oClientesVM { get; set; } = new();
+    public ImagenesVM oImagenesVM { get; set; } = new();
+    public long maxFileSize = 640 * 480 * 15;
+    [Parameter]
+    public string imageDataUri { get; set; }
+    public int IdImagen { get; set; }
+
+    public async Task GuardarDatos()
+    {
+        bool res = await http.PostJsonAsync<bool>("api/Clientes/Guardar", oClientesVM);
+        if (res)
+        {
+
+            navigationManager.NavigateTo("/listadoClientes");
+        }
+    }
+
+    public async Task VerImagen(InputFileChangeEventArgs e)
+    {
+        var imageFile = await e.File.RequestImageFileAsync("image/*", 640, 480);
+
+        using Stream fileStream = imageFile.OpenReadStream(maxFileSize);
+        using MemoryStream ms = new();
+        await fileStream.CopyToAsync(ms);        
+
+        imageDataUri = $"data:image/*;base64,{Convert.ToBase64String(ms.ToArray())}";        
+        oImagenesVM.Id = oClientesVM.IdImagen;
+        oImagenesVM.BlobImagen = ms.ToArray();        
+        oClientesVM.IdImagen = await http.PostJsonAsync<int>("/api/Imagenes/Guardar", oImagenesVM);
+    }
+}

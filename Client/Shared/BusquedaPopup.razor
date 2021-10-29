@@ -1,0 +1,48 @@
+﻿<div class="modal fade" id="@IdBuscar" tabindex="-1" aria-labelledby="@Aria" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h3>@Titulo</h3>
+                <button class="btn-close btn-danger" data-bs-dismiss="modal" aria-label="Close" />
+            </div>
+            <div class="modal-body">               
+                <div class="text-r"></div>
+
+                <Busqueda titulo="@Titulo"
+                          encabezados=encabezadosBuscar
+                          campos=camposBuscar
+                          clases=estilosBuscar
+                          lista=listaBuscar
+                          eventSeleccionar="SeleccionaBusqueda"
+                          eventBusqueda="BusquedaFiltro"
+                          Seleccionar=true />
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public string Titulo { get; set; }
+    [Parameter] public string Aria { get; set; }
+    [Parameter] public string IdBuscar { get; set; }
+    public string valorBusqueda { get; set; }
+    [Parameter] public string[] encabezadosBuscar {get; set;}
+    [Parameter] public string[] camposBuscar { get; set; }
+    [Parameter] public string[] estilosBuscar { get; set; }
+    [Parameter] public object[] listaBuscar { get; set; }
+    [Parameter] public EventCallback<string> eventSeleccionarBusqueda { get; set; }
+    [Parameter] public EventCallback<string> eventBusquedaFiltro { get; set; }
+
+    public void SeleccionaBusqueda()
+    {
+        valorBusqueda = valorBusqueda.ToUpper();
+        eventSeleccionarBusqueda.InvokeAsync(valorBusqueda);
+    }
+    public void BusquedaFiltro()
+    {
+        valorBusqueda = valorBusqueda.ToUpper();
+        eventBusquedaFiltro.InvokeAsync(valorBusqueda);
+    }
+
+
+}

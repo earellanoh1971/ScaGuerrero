@@ -1,0 +1,65 @@
+﻿@inherits LayoutComponentBase
+@inject NavigationManager navigate;
+@using ScaGuerrero.Client.Service;
+@inject NavigationManager navigationManager;
+@inject AuthenticationStateProvider auth;
+
+
+<div class="page">
+    <div class="main">
+        <div>
+            <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-bottom-top">
+                <a class="navbar-brand text-white">Guerrero Azteca</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarColor01">
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item px-3">
+                            <NavLink class="btn btn-outline-light btn-sm nav-link" href="" Match="NavLinkMatch.All">
+                                <span class="oi oi-home" aria-hidden="true"></span> Inicio
+                            </NavLink>
+                        </li>
+                        <AuthorizeView>
+                            <Authorized>
+                                <li class="nav-item px-3">
+                                    <NavLink class="btn btn-outline-warning btn-sm nav-link" href="menu">
+                                        <span class="oi oi-monitor" aria-hidden="true"></span> Sistema de Control Administrativo
+                                    </NavLink>
+                                </li>
+                            </Authorized>
+                        </AuthorizeView>                        
+                    </ul>
+                    <ul class="d-flex navbar-nav">
+                        <li class="nav-item p-2 text-white">
+                            <AuthorizeView>
+                                <Authorized>
+                                    <a class="btn btn-outline-danger btn-sm nav-link" @onclick="logout">Cerrar Sesión</a>
+                                </Authorized>
+
+                                <NotAuthorized>
+                                    <a class="btn btn-outline-success btn-sm nav-link" href="login">Iniciar Sesión</a>
+                                </NotAuthorized>
+
+                            </AuthorizeView>
+
+                        </li>
+                    </ul>
+                </div>
+
+            </nav>
+        </div>
+
+        <div class="content px-4">
+            @Body
+        </div>
+    </div>
+</div>
+
+@code{
+    public void logout()
+    {
+        ((Autenticacion)auth).Logout();
+        navigate.NavigateTo("/");
+    }
+}

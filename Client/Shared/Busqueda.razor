@@ -1,0 +1,180 @@
+﻿@inject NavigationManager navigation;
+
+@if (lista == null)
+{
+    <button class="btn btn-primary" type="button" disabled>
+        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        Cargando Informacion...
+    </button>
+}
+else
+{
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="row">                            
+                            <div class="col">
+                                <div class="input-group mb-3">                                    
+                                    <span class="input-group-text text-white bg-primary" id="basic-addon1"><i class="fas fa-search" /></span>
+                                    <input type="text" class="form-control" @bind-value="valor" @bind-value:event="oninput" @onkeyup="BusquedaR" placeholder="Ingrese @titulo a Buscar" aria-describedby="basic-addon1" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="">
+                            <table class="table table-striped table-bordered">
+                                <thead>
+                                    <tr role="row">
+                                        @{var tit = titulo + "s";}
+                                        @foreach (string cab in encabezados)
+                                        {
+                                            <th>@cab</th>
+                                        }
+                                        @if (Seleccionar == true)
+                                        {
+                                            <th>Acciones</th>
+                                        }
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    @{
+                                        List<object> listaRetornar = new();
+                                        int indiceValor;
+                                        if (indiceVal > 1) { indiceValor = indiceVal; } else { indiceValor = 1; }
+                                        int inicio = (indiceValor * RegPag) - RegPag;
+                                        int fin = indiceValor * RegPag;
+                                        @for (int i = inicio; i < fin; i++)
+                                        {
+                                            if (i < lista.Length) { listaRetornar.Add(lista[i]); }
+                                        }
+                                    }
+
+                                    <Virtualize Items="listaRetornar" Context="obj">
+                                        <tr role="row">
+                                            @{
+                                                int icampo = 0;
+                                                @foreach (var prop in campos)
+                                                {
+                                                    <td class=@clases[icampo]>@obj.GetType().GetProperty(prop).GetValue(obj).ToString()</td>
+                                                    icampo++;
+
+                                                }
+                                            }
+                                            @if (Seleccionar == true )
+                                            {
+                                                <td>                                                    
+                                                    <button type="button" data-bs-dismiss="modal" class="btn btn-sm btn-primary mx-2" @onclick="@(()=>SeleccionarReg(obj.GetType().GetProperties()[0].GetValue(@obj).ToString()))"><i class="fa fa-hand-o-right"></i></button>                                                    
+                                                </td>
+                                            }
+
+                                        </tr>
+                                    </Virtualize>
+
+                                </tbody>
+                            </table>
+                            @{
+                                int inicioP = inicio + 1;
+                                int finP = fin;
+                                if (finP > lista.Length) { finP = lista.Length; }
+                            }
+                            <div class="row">
+                                <div class="col-8">Mostrando de @inicioP a @finP de @lista.Length @tit. Página @indiceVal de @numeroPaginas().</div>
+                                <div class="col-4">
+                                    <span>
+                                        <button class="btn btn-success" @onclick="@( e =>PaginarAnterior())">Anterior</button>
+                                        @{
+                                            int data = indiceVal;
+                                            <button class="btn btn-outline-success" @onclick="@( e =>Paginar(data))">@indiceVal</button>
+                                        }
+                                        <button class="btn btn-success" @onclick="@( e =>PaginarSiguiente())">Siguiente</button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+
+    public string valor { get; set; }
+    [Parameter] public string titulo { get; set; } = "";
+    public int RegPag { get; set; } = 10;
+    public string ValorEliminar { get; set; } = "";
+    [Parameter] public string[] encabezados { get; set; }
+    [Parameter] public string[] campos { get; set; }
+    [Parameter] public string[] clases { get; set; }
+    [Parameter] public object[] lista { get; set; }
+    [Parameter] public string tipo { get; set; } = "none";
+    [Parameter] public bool Seleccionar { get; set; } = false;
+    [Parameter]
+    public EventCallback<string> eventBusqueda { get; set; }
+    [Parameter]
+    public EventCallback<string> eventSeleccionar { get; set; }
+    [Parameter]
+    public bool boton { get; set; } = true;
+
+    public List<object> listaRetornar { get; set; }
+    public int indiceVal { get; set; } = 1;
+
+    public void CambiarRegistrosPagina(ChangeEventArgs e)
+    {
+        int vC = int.Parse(e.Value.ToString());
+        RegPag = vC;
+    }
+
+    public int numeroPaginas()
+    {
+        int numeroBotones;
+        int numeroRegistro = lista.Length;
+        if (numeroRegistro % RegPag == 0)
+        {
+            numeroBotones = (numeroRegistro / RegPag);
+        }
+        else
+        {
+            numeroBotones = (numeroRegistro / RegPag) + 1;
+        }
+        return numeroBotones;
+
+
+    }
+    public void Paginar(int indicePag)
+    {
+
+        indiceVal = indicePag;
+    }
+
+    public void PaginarAnterior()
+    {
+        indiceVal = indiceVal - 1;
+        if (indiceVal < 1) indiceVal = 1;
+    }
+    public void PaginarSiguiente()
+    {
+        int nPag = numeroPaginas();
+        indiceVal = indiceVal + 1;
+
+        if (indiceVal > nPag) indiceVal = nPag;
+    }
+
+
+    public void BusquedaR()
+    {
+        valor = valor.ToUpper();
+        eventBusqueda.InvokeAsync(valor);
+    }
+
+    public void SeleccionarReg(string data)
+    {
+        eventSeleccionar.InvokeAsync(data);
+    }    
+
+}

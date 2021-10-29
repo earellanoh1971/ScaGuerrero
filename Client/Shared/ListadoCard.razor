@@ -1,0 +1,232 @@
+﻿@if (lista == null) {<h4>Cargando informacion....</h4>}
+else{
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <div class="row mb-2">
+                            <div class="col-2">
+                                @{ 
+                                    var tit = titulo + "s";
+                                }
+                                <h3>Lista de @tit</h3>
+                            </div>
+                            <div class="col-2">
+                                @if (Agregar == true)
+                                {
+                                <NavLink href="@rutaAgregar">
+                                    <div class="input-group mb-3"><a class="btn btn-info form-control"><span class="oi oi-plus mr-2"></span>Agregar nuevo @titulo</a></div>
+                                </NavLink>
+                                    
+                                }
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-2 form-control" id="example_length">
+                                <label>
+                                    Mostrar
+                                    <select name="example_length" aria-controls="example" class="" @bind-value="RegPag" @bind-value:event="oninput" @onchange="CambiarRegistrosPagina">
+                                        <option value="8">8</option>
+                                        <option value="10">10</option>
+                                        <option value="12">12</option>
+                                        <option value="16">16</option>
+                                    </select> @tit
+                                </label>
+                            </div>
+                            <div class="col-4">
+                                <div class="input-group mb-3">
+
+                                    @if (tipo == "text")
+                                    {
+                                        <span class="input-group-text " id="basic-addon1"><span class="oi oi-magnifying-glass"></span></span>
+                                        <input type="text" class="form-control" @bind-value="valor" @bind-value:event="oninput" @onkeyup="Busqueda" placeholder="Ingrese @titulo a Buscar" aria-describedby="basic-addon1" />
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        @{ 
+                            var cClase = "contenedorh";
+                            if (conHover){ cClase = "contenedorh"; } else { cClase = "contenedor"; }
+
+                        }
+                        <div class=@cClase>
+                            @{
+                                List<object> listaRetornar = new();
+                                int indiceValor;
+                                if (indiceVal > 1) { indiceValor = indiceVal; } else { indiceValor = 1; }
+                                int inicio = (indiceValor * RegPag) - RegPag;
+                                int fin = indiceValor * RegPag;
+                                @for (int i = inicio; i < fin; i++) { if (i < lista.Length) { listaRetornar.Add(lista[i]); } }
+                            }
+                            <Virtualize Items="listaRetornar" Context="obj">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <img src="Imagenes/personasinfoto.jpg">
+                                    </div>
+                                    <div class="card-body">
+                                        <h7><strong>@obj.GetType().GetProperty(campos[1]).GetValue(obj).ToString()</strong></h7>
+                                        @{
+                                            if (obj.GetType().GetProperty(campos[2]).GetValue(obj).ToString() != "")
+                                            {
+                                                <p>
+                                                     @obj.GetType().GetProperty(campos[2]).GetValue(obj).ToString()
+                                                </p>
+                                            }                                            
+                                            @if(obj.GetType().GetProperty(campos[3]).GetValue(obj).ToString() !="") { 
+                                                <p class="mb-0">@obj.GetType().GetProperty(campos[3]).GetValue(obj).ToString()</p>
+                                            }
+                                        }
+                                    </div>
+                                    <div class="card-footer">
+                                        @if (Editar == true)
+                                        {<NavLink href="@rutaEditar">
+                                                <button class="btn btn-sm btn-primary mr-1"><span class="oi oi-pencil" aria-hidden="true" @onclick="@(() => EditarReg(obj.GetType().GetProperties()[0].GetValue(@obj).ToString()))"></span></button>
+                                         </NavLink>      
+                                         }
+
+                                        @if (Eliminar == true)
+                                        {
+                                            var msg = "Eliminar " + titulo;
+                                            var msgconfirm = "Esta seguro de eliminar al " + titulo;
+                                            
+                                            <button class="btn btn-sm btn-danger ml-1" data-toggle="modal" data-target="#exampleModal" @onclick="@(() => EliminarReg(obj.GetType().GetProperties()[0].GetValue(@obj).ToString()))"><span class="oi oi-x" aria-hidden="true"></span></button>
+                                            <MensajeConfirmacion TituloMensaje=@msg Mensaje=@msgconfirm Id="@ValorEliminar" eventEliminar="EliminarDatos" eventHover="activaHover" />
+                                        }
+                                    </div>
+                                </div>
+                            </Virtualize>
+                            </div>
+                            @{
+                                int inicioP = inicio + 1;
+                                int finP = fin;
+                                if (finP > lista.Length) { finP = lista.Length; }
+                            }
+                            <div class="row">                               
+                                <div class="col-3">Mostrando de @inicioP a @finP de @lista.Length @tit. Página @indiceVal de @numeroPaginas().</div>
+                                <div class="offset-6">
+                                    <span>
+                                        <button class="btn btn-success" @onclick="@( e => PaginarAnterior())">Anterior</button>
+                                        @{
+                                            int data = indiceVal;
+                                            <button class="btn btn-outline-success" @onclick="@( e => Paginar(data))">@indiceVal</button>
+                                        }
+                                        @for (int i = 1; i <= numeroPaginas(); i++)
+                                        {
+
+                                        }
+                                        <button class="btn btn-success" @onclick="@( e => PaginarSiguiente())">Siguiente</button>
+                                    </span>
+                                </div>
+                            </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+
+    public string valor { get; set; }
+    [Parameter] public string titulo { get; set; } = "";
+    public int RegPag { get; set; } = 16;
+    public string ValorEliminar { get; set; } = "";
+    public bool conHover { get; set; } = true;
+    [Parameter] public string[] encabezados { get; set; }
+    [Parameter] public string[] campos { get; set; }
+    [Parameter] public object[] lista { get; set; }
+    [Parameter] public string tipo { get; set; } = "none";    
+    [Parameter] public bool Editar { get; set; } = false;
+    [Parameter] public bool Agregar { get; set; } = false;
+    [Parameter] public bool Eliminar { get; set; } = false;
+    [Parameter] public string rutaAgregar { get; set; } = "";
+    [Parameter] public string rutaEditar { get; set; } = "";
+
+    [Parameter]
+    public EventCallback<string> eventBusqueda { get; set; }
+    [Parameter]
+    public EventCallback<string> eventEditar { get; set; }
+    [Parameter]
+    public EventCallback<string> eventEliminar { get; set; }
+    [Parameter]
+    public bool boton { get; set; } = true;
+
+    public List<object> listaRetornar { get; set; }
+    public int indiceVal { get; set; } = 1;
+
+    public void CambiarRegistrosPagina(ChangeEventArgs e)
+    {
+        int vC = int.Parse(e.Value.ToString());
+        RegPag = vC;
+    }
+
+    public int numeroPaginas()
+    {
+        int numeroBotones;
+        int numeroRegistro = lista.Length;
+        if (numeroRegistro % RegPag == 0)
+        {
+            numeroBotones = (numeroRegistro / RegPag);
+        }
+        else
+        {
+            numeroBotones = (numeroRegistro / RegPag) + 1;
+        }
+        return numeroBotones;
+
+
+    }
+    public void Paginar(int indicePag)
+    {
+
+        indiceVal = indicePag;
+    }
+
+    public void PaginarAnterior()
+    {
+        indiceVal = indiceVal - 1;
+        if (indiceVal < 1) indiceVal = 1;
+    }
+    public void PaginarSiguiente()
+    {
+        int nPag = numeroPaginas();
+        indiceVal = indiceVal + 1;
+
+        if (indiceVal > nPag) indiceVal = nPag;
+    }
+
+    public void EditarReg(string data)
+    {
+        eventEditar.InvokeAsync(data);
+    }
+
+    public void EliminarReg(string data)
+    {
+        conHover= false;
+        ValorEliminar = data;
+
+    }
+
+    public void EliminarDatos(string data)
+    {
+        conHover = true;
+        eventEliminar.InvokeAsync(data);
+    }
+
+    public void activaHover()
+    {
+        conHover = true;
+    }
+
+
+    public void Busqueda()
+    {
+        valor = valor.ToUpper();
+        eventBusqueda.InvokeAsync(valor);
+    }
+}

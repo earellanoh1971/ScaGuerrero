@@ -1,0 +1,36 @@
+﻿<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content p-2">
+            <div class="modal-body">
+                <h5>@Mensaje</h5>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @onclick="activaHover">Cancelar</button>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @onclick="Eliminar">Aceptar</button>
+            </div>
+        </div>
+    </div>
+</div>
+@code {
+    [Parameter]
+    public string TituloMensaje { get; set; }
+    [Parameter]
+    public string Mensaje { get; set; }
+    [Parameter]
+    public string Id { get; set; }    
+    [Parameter]
+    public EventCallback<string> eventEliminar { get; set; }
+    [Parameter]
+    public EventCallback<string> eventHover { get; set; }
+
+    public void Eliminar()
+    {
+        eventEliminar.InvokeAsync(Id);
+    }
+    public void activaHover()
+    {
+        eventHover.InvokeAsync();
+    }
+
+
+}

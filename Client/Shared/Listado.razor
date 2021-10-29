@@ -1,0 +1,241 @@
+﻿@inject NavigationManager navigation;
+
+@if (lista == null)
+{
+<button class="btn btn-primary" type="button" disabled>
+    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+    Cargando Informacion...
+</button>
+}
+else
+{
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <div class="row">
+                            <div class="col-2">
+                                @{var tit = titulo + "s";}
+                                <h3>Lista de @tit</h3>
+                            </div>
+                            <div class="col-2">
+                                @if (Agregar == true){
+                                    var nuevo = titulo.Substring(titulo.Length - 1, 1) == "a" ? "nueva" : "nuevo";
+                                    <div class="input-group mb-3">
+                                        <NavLink href="@rutaAgregar" style="text-decoration:none;">
+                                            <div class="input-group mb-3"><a class="btn btn-success form-control btn-lg text-white"><i class="fas fa-plus"></i> Agregar @nuevo @titulo</a></div>
+                                        </NavLink>
+
+                                    </div>
+                                }
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-2" id="numregs">
+                                <label>
+                                    Mostrar
+                                    <select name="numregs" class="form-select-sm" @bind-value="RegPag" @bind-value:event="oninput" @onchange="CambiarRegistrosPagina">
+                                        <option value="5">5</option>
+                                        <option value="8">8</option>
+                                        <option value="10">10</option>
+                                        <option value="12">12</option>
+                                    </select> @tit
+                                </label>
+                            </div>
+                            <div class="col-4">
+                                <div class="input-group mb-3">
+
+                                    @if (tipo == "text")
+                                    {
+
+                                        <span class="input-group-text " id="basic-addon1"><i class="fas fa-search" /></span>
+                                        <input type="text" class="form-control" @bind-value="valor" @bind-value:event="oninput" @onkeyup="Busqueda" placeholder="Ingrese @titulo a Buscar" aria-describedby="basic-addon1" />
+
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="">
+
+                            <table class="table table-striped table-bordered">
+                                <thead>
+                                    <tr role="row">
+                                        @foreach (string cab in encabezados)
+                                        {
+                                            <th>@cab</th>
+                                        }
+                                        @if (Editar == true || Eliminar == true)
+                                        {
+                                            <th>Acciones</th>
+                                        }
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    @{
+                                        List<object> listaRetornar = new();
+                                        int indiceValor;
+                                        if (indiceVal > 1) { indiceValor = indiceVal; } else { indiceValor = 1; }
+                                        int inicio = (indiceValor * RegPag) - RegPag;
+                                        int fin = indiceValor * RegPag;
+                                        @for (int i = inicio; i < fin; i++)
+                                        {
+                                            if (i < lista.Length) { listaRetornar.Add(lista[i]); }
+                                        }                                        
+                                    }
+
+                                    <Virtualize Items="listaRetornar" Context="obj">
+                                        <tr role="row">
+                                            @{ 
+                                                int icampo = 0;
+                                                @foreach (var prop in campos)
+                                                {
+
+                                                <td class=@clases[icampo]>@obj.GetType().GetProperty(prop).GetValue(obj).ToString()</td>
+                                                    icampo++;
+
+                                                }
+                                            }
+                                            @if (Editar == true || Eliminar == true)
+                                            {
+                                                <td>
+                                                    @if (Editar == true){                                                        
+                                                      <button class="btn btn-sm btn-primary mx-2" @onclick="@(()=>EditarReg(obj.GetType().GetProperties()[0].GetValue(@obj).ToString()))"><i class="fas fa-edit"/></button>                                                        
+                                                    }
+                                                    @if (Eliminar == true){
+                                                        <button class="btn btn-sm btn-danger mx-2" data-bs-toggle="modal" data-bs-target="#exampleModal" @onclick="@(()=>EliminarReg(obj.GetType().GetProperties()[0].GetValue(@obj).ToString()))"><i class="fas fa-trash"/></button>
+                                                        <MensajeConfirmacion TituloMensaje="Eliminar Registro" Mensaje="Esta seguro de Eliminar el Registro?" Id="@ValorEliminar" eventEliminar="EliminarDatos" />
+                                                    }
+                                                </td>
+                                            }
+
+                                        </tr>
+                                    </Virtualize>
+
+                                </tbody>
+                            </table>
+                            @{
+                                int inicioP = inicio + 1;
+                                int finP = fin;
+                                if (finP > lista.Length) { finP = lista.Length; }
+                            }
+                        <div class="row">
+                            <div class="col-4">Mostrando de @inicioP a @finP de @lista.Length @tit. Página @indiceVal de @numeroPaginas().</div>
+                            <div class="col-6"></div>
+                            <div class="col-2">
+                                <span>
+                                    <button class="btn btn-success" @onclick="@( e =>PaginarAnterior())">Anterior</button>
+                                    @{
+                                        int data = indiceVal;
+                                        <button class="btn btn-outline-success" @onclick="@( e =>Paginar(data))">@indiceVal</button>
+                                    }                                    
+                                    <button class="btn btn-success" @onclick="@( e =>PaginarSiguiente())">Siguiente</button>
+                                </span>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+
+    public string valor { get; set; }
+    [Parameter] public string titulo { get; set; } = "";
+    public int RegPag { get; set; } = 10;
+    public string ValorEliminar { get; set; } = "";
+    [Parameter] public string[] encabezados { get; set; }
+    [Parameter] public string[] campos { get; set; }
+    [Parameter] public string[] clases { get; set; }
+    [Parameter] public object[] lista { get; set; }
+    [Parameter] public string tipo { get; set; } = "none";
+    [Parameter] public bool Editar { get; set; } = false;
+    [Parameter] public bool Agregar { get; set; } = false;
+    [Parameter] public bool Eliminar { get; set; } = false;
+    [Parameter] public string rutaAgregar { get; set; } = "";
+    [Parameter] public string rutaEditar { get; set; } = "";
+
+    [Parameter]
+    public EventCallback<string> eventBusqueda { get; set; }
+    [Parameter]
+    public EventCallback<string> eventEditar { get; set; }
+    [Parameter]
+    public EventCallback<string> eventEliminar { get; set; }
+    [Parameter]
+    public bool boton { get; set; } = true;
+
+    public List<object> listaRetornar { get; set; }
+    public int indiceVal { get; set; } = 1;
+
+    public void CambiarRegistrosPagina(ChangeEventArgs e)
+    {
+        int vC = int.Parse(e.Value.ToString());
+        RegPag = vC;
+    }
+
+    public int numeroPaginas()
+    {
+        int numeroBotones;
+        int numeroRegistro = lista.Length;
+        if (numeroRegistro % RegPag == 0)
+        {
+            numeroBotones = (numeroRegistro / RegPag);
+        }
+        else
+        {
+            numeroBotones = (numeroRegistro / RegPag) + 1;
+        }
+        return numeroBotones;
+
+
+    }
+    public void Paginar(int indicePag)
+    {
+
+        indiceVal = indicePag;
+    }
+
+    public void PaginarAnterior()
+    {
+        indiceVal = indiceVal-1;
+        if (indiceVal < 1) indiceVal = 1;
+    }
+    public void PaginarSiguiente()
+    {
+        int nPag = numeroPaginas();
+        indiceVal = indiceVal + 1;
+
+        if (indiceVal > nPag) indiceVal = nPag;
+    }
+
+    public void EditarReg(string data)
+    {
+        navigation.NavigateTo(rutaEditar + "/"+data);
+        eventEditar.InvokeAsync(data);
+    }
+
+    public void EliminarReg(string data)
+    {
+        ValorEliminar = data;
+
+    }
+
+    public void EliminarDatos(string data)
+    {
+        eventEliminar.InvokeAsync(data);
+    }
+
+
+    public void Busqueda()
+    {        
+        eventBusqueda.InvokeAsync(valor);
+    }
+
+}

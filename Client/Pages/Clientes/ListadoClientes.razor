@@ -1,0 +1,58 @@
+﻿@page "/listadoClientes"
+@using ScaGuerrero.Shared
+@inject HttpClient http
+@inject NavigationManager Navigate;
+
+
+@{
+    string[] encabezadoTabla = { "Id", "Nombre", "Telefono", "e-mail" };
+    string[] camposMostrar = {"Id","Nombre","Telefono","EMail"};
+    string[] estilos = { "text-left", "text-left", "text-left", "text-left"};
+}
+<AuthorizeView>
+    <Authorized>
+        <Listado titulo="Cliente"
+                 encabezados=encabezadoTabla
+                 campos=camposMostrar
+                 clases=estilos
+                 lista=listaClientes tipo="text"
+                 eventEliminar="EliminarCliente"
+                 eventBusqueda="BusquedaClientes"
+                 boton=false
+                 Editar=true
+                 Eliminar=true
+                 Agregar=true
+                 rutaEditar="editarClientes"
+                 rutaAgregar="agregarClientes" />
+    </Authorized>
+    <NotAuthorized>
+        @{
+            Navigate.NavigateTo("/");
+        }
+    </NotAuthorized>
+</AuthorizeView>
+
+
+
+
+@code {
+    private ClientesVM[] listaClientes;
+    protected override async Task OnInitializedAsync()
+    {
+        listaClientes = await http.GetFromJsonAsync<ClientesVM[]>("api/Clientes/Get");
+    }
+
+    public async Task BusquedaClientes(string data)
+    {
+        listaClientes = await http.GetFromJsonAsync<ClientesVM[]>("api/Clientes/Filtrar/" + data);
+    }
+
+    public async Task EliminarCliente(string data)
+    {
+        int resultado = await http.GetFromJsonAsync<int>("api/Clientes/Eliminar/" + data);
+        if (resultado == 1)
+        {
+            listaClientes = await http.GetFromJsonAsync<ClientesVM[]>("api/Clientes/Get");
+        }
+    }
+}

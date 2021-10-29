@@ -1,0 +1,58 @@
+﻿@page "/listadoDiapositivas"
+@using ScaGuerrero.Shared
+@inject HttpClient http
+@inject NavigationManager Navigate;
+
+
+@{
+    string[] encabezadoTabla = { "Id", "Descripcion"};
+    string[] camposMostrar = { "Id", "Descripcion"};
+    string[] estilos = { "text-left", "text-left"};
+}
+<AuthorizeView>
+    <Authorized>
+        <Listado titulo="Diapositiva"
+                 encabezados=encabezadoTabla
+                 campos=camposMostrar
+                 clases=estilos
+                 lista=listaDiapositivas tipo="text"
+                 eventEliminar="EliminarDiapositiva"
+                 eventBusqueda="BusquedaDiapositivas"
+                 boton=false
+                 Editar=true
+                 Eliminar=true
+                 Agregar=true
+                 rutaEditar="editarDiapositivas"
+                 rutaAgregar="agregarDiapositivas" />
+    </Authorized>
+    <NotAuthorized>
+        @{
+            Navigate.NavigateTo("/");
+        }
+    </NotAuthorized>
+</AuthorizeView>
+
+
+
+
+@code {
+    private DiapositivasVM[] listaDiapositivas;
+    protected override async Task OnInitializedAsync()
+    {
+        listaDiapositivas = await http.GetFromJsonAsync<DiapositivasVM[]>("api/Diapositivas/Get");
+    }
+
+    public async Task BusquedaDiapositivas(string data)
+    {
+        listaDiapositivas = await http.GetFromJsonAsync<DiapositivasVM[]>("api/Diapositivas/Filtrar/" + data);
+    }
+
+    public async Task EliminarDiapositiva(string data)
+    {
+        int resultado = await http.GetFromJsonAsync<int>("api/Diapositivas/Eliminar/" + data);
+        if (resultado == 1)
+        {
+            listaDiapositivas = await http.GetFromJsonAsync<DiapositivasVM[]>("api/Diapositivas/Get");
+        }
+    }
+}

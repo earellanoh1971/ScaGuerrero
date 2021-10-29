@@ -1,0 +1,25 @@
+﻿
+<div class="row">
+    <div class="col-2"></div>
+    <div class="col-2">
+        <button class="btn btn-primary btn-lg btn-block m-2" disabled=@lClienteCiclo> Cliente y Ciclo </button>
+    </div>
+    <div class="col-2">
+        <button class="btn btn-success btn-lg btn-block m-2" disabled=@lArticulos> Seleccionar Articulos </button>
+    </div>
+    <div class="col-2">
+        <button class="btn btn-warning btn-lg btn-block m-2" disabled=@lParametros> Parametros Venta </button>
+    </div>
+    <div class="col-2">
+        <button class="btn btn-danger btn-lg btn-block m-2" disabled=@lPago> Cerrar Venta </button>
+    </div>
+</div>
+
+@code {
+    [Parameter] public bool lClienteCiclo { get; set; }
+    [Parameter] public bool lArticulos { get; set; }
+    [Parameter] public bool lParametros { get; set; }
+    [Parameter] public bool lPago { get; set; }
+
+
+}

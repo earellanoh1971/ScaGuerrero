@@ -1,0 +1,183 @@
+﻿@using ScaGuerrero.Shared
+@using System.IO
+@using System.Drawing;
+@using System.Drawing.Imaging;
+@inject HttpClient http
+@inject NavigationManager navigationManager
+
+<EditForm Model="@oUsuariosVM" OnValidSubmit="GuardarDatos">
+    <DataAnnotationsValidator />
+    <div class="container-fluid img-fluid p-2">
+        <div class="row ">
+            <div class="col-3">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Mensajes</h3>
+                    </div>
+                    <div class="card-body">
+                        <ValidationSummary />
+                    </div>
+                </div>
+            </div>
+            <div class="col-7">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="card-title">@Titulo</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col">
+                                <div class="form-group">
+                                    <label class="control-label">Usuario</label>
+                                    <InputText @bind-Value="oUsuariosVM.Usuario" class="form-control" />
+                                    <ValidationMessage For="@(() => oUsuariosVM.Usuario)" />
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <ul class="nav nav-tabs card-header-tabs" id="nav-tab" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" id="nav-Generales-tab" data-bs-toggle="tab"
+                                   href="#nav-Generales" role="tab" aria-controls="nav-Generales"
+                                   aria-selected="true">Generales</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="nav-Perfil-tab" data-bs-toggle="tab"
+                                   href="#nav-Perfil" role="tab" aria-controls="nav-Perfil"
+                                   aria-selected="false">Perfil</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card-body">
+                        <div class="tab-content" id="nav-tabContent">
+                            <div class="tab-pane fade show active border  p-4" id="nav-Generales" role="tabpanel" aria-labelledby="nav-Generales-tab">
+                                <div class="row">
+                                    <div class="col-sm-7">
+                                        <div class="form-group my-2">
+                                            <label class="control-label">Nombre Completo</label>
+                                            <InputText @bind-Value="oUsuariosVM.Nombre" class="form-control" />
+                                            <ValidationMessage For="@(() => oUsuariosVM.Nombre)" />
+                                        </div>
+                                        <div class="form-group my-2">
+                                            <label class="control-label">Correo Electrónico</label>
+                                            <InputText @bind-Value="oUsuariosVM.Email" class="form-control" />
+                                            <ValidationMessage For="@(() => oUsuariosVM.Email)" />
+                                        </div>
+                                        <div class="form-group my-2">
+                                            <label class="control-label">Teléfono</label>
+                                            <InputText @bind-Value="oUsuariosVM.Telefono" class="form-control" />
+                                            <ValidationMessage For="@(() => oUsuariosVM.Telefono)" />
+                                        </div>
+                                        @if (InputPassword)
+                                        {
+                                    <div class="form-goup" mt-2>
+                                        <label class="control-label mt-2">Contraseña</label>
+                                        <div class="input-group">
+                                            <InputText type="@tipoMostrar" @bind-Value="oUsuariosVM.Password" class="form-control" placeholder="Ingrese la Contraseña..." aria-label="Contraseña" aria-describedby="button-ojo" />
+
+                                            @if (MostrarPassword)
+                                            {
+                                                <button class="btn btn-outline-secondary" type="button" @onclick="CambiaMostrar" id="button-ojo"><i class="fas fa-eye-slash"></i></button>
+                                            }
+                                            else
+                                            {
+                                                <button class="btn btn-outline-secondary" type="button" @onclick="CambiaMostrar" id="button-ojo"><i class="fas fa-eye"></i></button>
+                                            }
+                                        </div>
+                                        <ValidationMessage For="@(() => oUsuariosVM.Password)" />
+                                    </div>
+                                        }
+                                    </div>
+                                    <div class="col-sm-5">
+                                        <div class="card">
+                                            <img style="height:380px;" id="imgSeleccionada" src="@imageDataUri" class="card-img-top rounded-top p-2">
+                                            <label for="subidaArchivo" class="btn btn-primary mx-2"> Seleccione un Archivo...</label>
+                                            <InputFile id="subidaArchivo" OnChange="VerImagen" hidden />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade border p-4" id="nav-Perfil" role="tabpanel"
+                                 aria-labelledby="nav-Perfil-tab">
+                                <div class="row">
+                                    <div class="col-md-12">
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="row">
+                            <div class=" col-sm-2">
+                                <input type="submit" class="form-control btn btn-success" value="Aceptar" />
+                            </div>
+                            <div class="col-sm-2">
+                                <NavLink href="/ListadoUsuarios">
+                                    <input class="form-control btn btn-warning" value="Regresar" />
+                                </NavLink>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</EditForm>
+@code {
+    [Parameter]
+    public string Titulo { get; set; }
+    [Parameter]
+    public bool InputPassword { get; set; } = false;
+    [Parameter]
+    public bool MostrarVerpassword { get; set; } = false;
+    [Parameter]
+    public UsuariosVM oUsuariosVM { get; set; } = new();
+    public ImagenesVM oImagenesVM { get; set; } = new();
+    public long maxFileSize = 640 * 480 * 15;
+    [Parameter]
+    public string imageDataUri { get; set; }
+    public int IdImagen { get; set; }
+    public string tipoMostrar { get; set; } = "password";
+    public bool MostrarPassword { get; set; } = false;
+
+    public async Task GuardarDatos()
+    {
+        bool res = await http.PostJsonAsync<bool>("api/Usuarios/Guardar", oUsuariosVM);
+        if (res)
+        {
+
+            navigationManager.NavigateTo("/ListadoUsuarios");
+        }
+    }
+
+    public void CambiaMostrar()
+    {
+
+        MostrarPassword = !MostrarPassword;
+        tipoMostrar = MostrarPassword == true ? "text" : "password";
+    }
+
+    public async Task VerImagen(InputFileChangeEventArgs e)
+    {
+        var imageFile = await e.File.RequestImageFileAsync("image/*", 640, 480);
+
+        using Stream fileStream = imageFile.OpenReadStream(maxFileSize);
+        using MemoryStream ms = new();
+        await fileStream.CopyToAsync(ms);
+
+        imageDataUri = $"data:image/*;base64,{Convert.ToBase64String(ms.ToArray())}";
+        oImagenesVM.Id = oUsuariosVM.IdImagen;
+        oImagenesVM.BlobImagen = ms.ToArray();
+        oUsuariosVM.IdImagen = await http.PostJsonAsync<int>("/api/Imagenes/Guardar", oImagenesVM);
+    }
+}

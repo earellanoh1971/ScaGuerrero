@@ -1,0 +1,24 @@
+﻿@page "/editarDiapositivas/{Id}"
+@using ScaGuerrero.Shared
+@inject HttpClient http
+
+<FormularioDiapositivas Titulo=" Editar Diapositiva" oDiapositivasVM=diapositivaVM imageDataUri=@Uri />
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+    public string Uri { get; set; }
+
+    public DiapositivasVM diapositivaVM = new();
+
+
+    protected async override Task OnParametersSetAsync()
+    {
+        diapositivaVM = await http.GetJsonAsync<DiapositivasVM>("api/Diapositivas/obtenerDiapositiva/" + Id);
+        Uri = "/api/Imagenes/Mostrar/" + diapositivaVM.IdImagen;
+        Console.WriteLine(Uri);
+
+
+    }
+
+}
