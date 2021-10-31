@@ -200,12 +200,12 @@
       "netstandard.dll": "sha256-mbIVAluJ7cAx0vUQshB\/c1zEIK5JcYwIYxo\/BQ\/meRU=",
       "System.Private.CoreLib.dll": "sha256-FrZbEyy47f3RDuj77R5oHUGxSGEDgRRxykTjImrLqfM=",
       "ScaGuerrero.Shared.dll": "sha256-DpIcueUN15AL\/mjUKtEW+cYiK4KMpgrvmiBF9NGcp8U=",
-      "ScaGuerrero.Client.dll": "sha256-jz\/hvFyF3HGYg3Hsv2QRIDKxjvKUzdFjTHnaW1Vi9HQ="
+      "ScaGuerrero.Client.dll": "sha256-+JB6gETvVymA83HE6tXYrYKkIRvTsWd0JxtOMBc0S74="
     },
     "lazyAssembly": null,
     "pdb": {
       "ScaGuerrero.Shared.pdb": "sha256-86G3igmzCCna9bB4s+3nkLftjulREwN77zLyZO307jM=",
-      "ScaGuerrero.Client.pdb": "sha256-YzKzZl5jwy5mHm0SVu3GIbMu5y2oiLOOltSoT2xZh5s="
+      "ScaGuerrero.Client.pdb": "sha256-3vQC5u8BHBzjPLk51aXJT0ZK7pSahdnY54ieVHHNQXs="
     },
     "runtime": {
       "dotnet.timezones.blat": "sha256-5ttRwTa4Rar530elwLdfGDeH9I9NX9MPyDl6zLi9uug=",

@@ -10,8 +10,9 @@ namespace ScaGuerrero.Client.Service
     public class Autenticacion : AuthenticationStateProvider
     {
         public override Task<AuthenticationState> GetAuthenticationStateAsync()
-        {            
-            var user = new ClaimsPrincipal();
+        {
+            var identity = new ClaimsIdentity();
+            var user = new ClaimsPrincipal(identity);
             return Task.FromResult(new AuthenticationState(user));
         }
 
@@ -27,7 +28,8 @@ namespace ScaGuerrero.Client.Service
 
         public void Logout()
         {
-            var user = new ClaimsPrincipal();
+            var identity = new ClaimsIdentity();
+            var user = new ClaimsPrincipal(identity);
             NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(user)));
         }
     }

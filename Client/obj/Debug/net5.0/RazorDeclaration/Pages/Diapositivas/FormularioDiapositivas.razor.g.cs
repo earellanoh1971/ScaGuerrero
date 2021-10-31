@@ -140,10 +140,10 @@ using System.Drawing.Imaging;
     public async Task GuardarDatos()
     {
         bool res = await http.PostJsonAsync<bool>("api/Diapositivas/Guardar", oDiapositivasVM);
-        if (res)
+        if (res == true)
         {
 
-            navigationManager.NavigateTo("/listadoDiapositivas");
+            Navigate.NavigateTo("/menu");
         }
     }
 
@@ -164,7 +164,7 @@ using System.Drawing.Imaging;
 #line default
 #line hidden
 #nullable disable
-        [global::Microsoft.AspNetCore.Components.InjectAttribute] private NavigationManager navigationManager { get; set; }
+        [global::Microsoft.AspNetCore.Components.InjectAttribute] private NavigationManager Navigate { get; set; }
         [global::Microsoft.AspNetCore.Components.InjectAttribute] private HttpClient http { get; set; }
     }
 }

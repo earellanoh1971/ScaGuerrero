@@ -3,7 +3,7 @@
 @using System.Drawing;
 @using System.Drawing.Imaging;
 @inject HttpClient http
-@inject NavigationManager navigationManager
+@inject NavigationManager Navigate
 
 <EditForm Model="@oDiapositivasVM" OnValidSubmit="GuardarDatos">
     <DataAnnotationsValidator />
@@ -95,10 +95,10 @@
     public async Task GuardarDatos()
     {
         bool res = await http.PostJsonAsync<bool>("api/Diapositivas/Guardar", oDiapositivasVM);
-        if (res)
+        if (res == true)
         {
 
-            navigationManager.NavigateTo("/listadoDiapositivas");
+            Navigate.NavigateTo("/menu");
         }
     }
 

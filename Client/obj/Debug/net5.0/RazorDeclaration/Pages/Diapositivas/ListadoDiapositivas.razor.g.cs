@@ -114,10 +114,18 @@ using ScaGuerrero.Shared;
 #nullable restore
 #line 38 "C:\Users\Enrique Arellano\source\repos\ScaGuerrero\Client\Pages\Diapositivas\ListadoDiapositivas.razor"
        
+    public string message { get; set; }
+    [CascadingParameter]
+    private Task<AuthenticationState> auth { get; set; }
     private DiapositivasVM[] listaDiapositivas;
     protected override async Task OnInitializedAsync()
     {
-        listaDiapositivas = await http.GetFromJsonAsync<DiapositivasVM[]>("api/Diapositivas/Get");
+        var authuser = await auth;
+        var user = authuser.User;
+        if (user.Identity.IsAuthenticated)
+        {
+            listaDiapositivas = await http.GetFromJsonAsync<DiapositivasVM[]>("api/Diapositivas/Get");
+        }        
     }
 
     public async Task BusquedaDiapositivas(string data)
